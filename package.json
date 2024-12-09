@@ -1,0 +1,29 @@
+{
+  "name": "gym-backend",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "bun run --hot src/index.ts",
+    "lint": "eslint .",
+    "lint:fix": "bun run lint --fix"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "^0.18.3",
+    "@oslojs/crypto": "^1.0.1",
+    "@oslojs/encoding": "^1.1.0",
+    "@scalar/hono-api-reference": "^0.5.163",
+    "drizzle-orm": "^0.37.0",
+    "hono": "^4.6.13",
+    "hono-pino": "^0.7.0",
+    "pino": "^9.5.0",
+    "pino-pretty": "^13.0.0",
+    "stoker": "^1.4.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.11.2",
+    "@types/bun": "latest",
+    "drizzle-kit": "^0.29.1",
+    "eslint": "^9.15.0",
+    "eslint-plugin-format": "^0.1.2"
+  }
+}
