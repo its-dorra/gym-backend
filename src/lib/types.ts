@@ -10,3 +10,5 @@ export interface AppBindings {
 export type AppRouteHandler<T extends RouteConfig> = RouteHandler<T, AppBindings>;
 
 export type AppOpenAPI = OpenAPIHono<AppBindings>;
+
+export type UserId = number;

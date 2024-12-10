@@ -12,6 +12,8 @@ export const invoiceLineTable = sqliteTable("invoice_line", {
   invoiceId: int("invoice_id").notNull().references(() => invoiceTable.id),
   quantity: int("quantity").notNull(),
   totalPrice: real("total_price").notNull(),
+  createdAt: int("created_at", { mode: "timestamp" }).notNull().$default(() => new Date()),
+  updatedAt: int("updated_at", { mode: "timestamp" }).notNull().$default(() => new Date()).$onUpdate(() => new Date()),
 });
 
 export const invoiceLineRelations = relations(invoiceLineTable, ({ one }) => ({

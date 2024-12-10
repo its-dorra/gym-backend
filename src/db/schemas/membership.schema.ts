@@ -12,6 +12,8 @@ export const membershipTable = sqliteTable("membership", {
   employeeId: int("employee_id").references(() => employeeTable.id),
   startDate: int("start_date", { mode: "timestamp" }).notNull().$default(() => new Date()),
   endDate: int("end_date").notNull(),
+  createdAt: int("created_at", { mode: "timestamp" }).notNull().$default(() => new Date()),
+  updatedAt: int("updated_at", { mode: "timestamp" }).notNull().$default(() => new Date()).$onUpdate(() => new Date()),
 });
 
 export const membershipRelations = relations(membershipTable, ({ one }) => ({

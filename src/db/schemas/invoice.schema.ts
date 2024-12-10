@@ -10,6 +10,8 @@ export const invoiceTable = sqliteTable("invoice", {
   memberId: int("member_id").notNull().references(() => memberTable.id),
   employeeId: int("employee_id").notNull().references(() => employeeTable.id),
   saleDate: int("sale_date", { mode: "timestamp" }).notNull().$default(() => new Date()),
+  createdAt: int("created_at", { mode: "timestamp" }).notNull().$default(() => new Date()),
+  updatedAt: int("updated_at", { mode: "timestamp" }).notNull().$default(() => new Date()).$onUpdate(() => new Date()),
 });
 
 export const invoiceRelations = relations(invoiceTable, ({ one, many }) => ({

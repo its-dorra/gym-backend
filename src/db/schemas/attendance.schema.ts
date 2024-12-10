@@ -8,6 +8,8 @@ export const attendanceTable = sqliteTable("attendance", {
   memberId: int("member_id").notNull().references(() => memberTable.id),
   checkInTime: text("check_in_time").notNull(),
   checkOutTime: text("check_out_time"),
+  createdAt: int("created_at", { mode: "timestamp" }).notNull().$default(() => new Date()),
+  updatedAt: int("updated_at", { mode: "timestamp" }).notNull().$default(() => new Date()).$onUpdate(() => new Date()),
 });
 
 export const attendanceRelations = relations(attendanceTable, ({ one }) => ({
