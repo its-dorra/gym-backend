@@ -4,6 +4,7 @@ import pretty from "pino-pretty";
 
 import env from "../env";
 
+
 export function pinoLogger() {
   return logger({
     pino: pino({ level: "debug" }, env.NODE_ENV === "production" ? undefined : pretty()),

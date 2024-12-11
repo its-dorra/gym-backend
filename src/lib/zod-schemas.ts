@@ -4,3 +4,7 @@ import { createMessageObjectSchema } from "stoker/openapi/schemas";
 export const notFoundSchema = createMessageObjectSchema(HttpStatusPhrases.NOT_FOUND);
 
 export const unauthorizedSchema = createMessageObjectSchema(HttpStatusPhrases.UNAUTHORIZED);
+
+export const forbiddenSchema = createMessageObjectSchema(HttpStatusPhrases.FORBIDDEN);
+
+export const internalServerErrorSchema = createMessageObjectSchema(HttpStatusPhrases.INTERNAL_SERVER_ERROR);

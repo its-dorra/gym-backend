@@ -4,7 +4,7 @@ import { jsonContent, jsonContentOneOf, jsonContentRequired } from "stoker/opena
 import { createErrorSchema, createMessageObjectSchema, IdParamsSchema } from "stoker/openapi/schemas";
 
 import { insertProductSchema, selectProductSchema, updateProductSchema } from "@/db/schemas/product.schema";
-import { notFoundSchema, unauthorizedSchema } from "@/lib/zod-schemas";
+import { internalServerErrorSchema, notFoundSchema, unauthorizedSchema } from "@/lib/zod-schemas";
 
 const tags = ["Products"];
 
@@ -14,6 +14,10 @@ export const list = createRoute({
   path: "/products",
   responses: {
     [HttpStatusCodes.OK]: jsonContent(z.array(selectProductSchema), "The list of products"),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent(
+      internalServerErrorSchema,
+      "Internal server error(s)",
+    ),
   },
 });
 
@@ -25,9 +29,13 @@ export const create = createRoute({
     body: jsonContentRequired(insertProductSchema, "The product to create"),
   },
   responses: {
-    [HttpStatusCodes.OK]: jsonContent(selectProductSchema, "The created product"),
+    [HttpStatusCodes.CREATED]: jsonContent(selectProductSchema, "The created product"),
     [HttpStatusCodes.UNAUTHORIZED]: jsonContent(createMessageObjectSchema(), "Unauthorized access"),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(createErrorSchema(insertProductSchema), "Invalid product error(s)"),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent(
+      internalServerErrorSchema,
+      "Internal server error(s)",
+    ),
   },
 });
 
@@ -45,6 +53,10 @@ export const getOne = createRoute({
       "Product not found",
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(createErrorSchema(IdParamsSchema), "Invalid id error"),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent(
+      internalServerErrorSchema,
+      "Internal server error(s)",
+    ),
   },
 });
 
@@ -61,6 +73,10 @@ export const patch = createRoute({
     [HttpStatusCodes.UNAUTHORIZED]: jsonContent(unauthorizedSchema, "Unauthorized access"),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, "Product not found"),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContentOneOf([createErrorSchema(updateProductSchema), (createErrorSchema(IdParamsSchema))], "Invalid validation error(s)"),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent(
+      internalServerErrorSchema,
+      "Internal server error(s)",
+    ),
   },
 });
 
@@ -76,6 +92,10 @@ export const remove = createRoute({
       description: "Product deleted",
     },
     [HttpStatusCodes.NOT_FOUND]: jsonContent(createErrorSchema(IdParamsSchema), "Invalid id error"),
+    [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent(
+      internalServerErrorSchema,
+      "Internal server error(s)",
+    ),
   },
 });
 

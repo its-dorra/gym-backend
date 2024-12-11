@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
+    "target": "ESNext",
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "paths": {
       "@/*": ["./src/*"]
     },

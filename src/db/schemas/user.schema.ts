@@ -36,7 +36,7 @@ export const userRelations = relations(userTable, ({ one }) => ({
 
 export const selectUserSchema = createSelectSchema(userTable).omit({ password: true, createdAt: true, updatedAt: true });
 
-export const insertUserSchema = createInsertSchema(userTable).omit({ createdAt: true, updatedAt: true });
+export const insertUserSchema = createInsertSchema(userTable).omit({ createdAt: true, updatedAt: true, id: true });
 
-export type User = z.infer<typeof insertUserSchema>;
+export type User = z.infer<typeof selectUserSchema>;
 export type Session = InferSelectModel<typeof sessionTable>;
