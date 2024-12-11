@@ -11,7 +11,7 @@ export const productTable = sqliteTable("product", {
   description: text("description"),
   price: real("price").notNull(),
   stockQuantity: int("stock_quantity").notNull(),
-  category: text("category"),
+  category: text("category").notNull(),
   createdAt: int("created_at", { mode: "timestamp" }).notNull().$default(() => new Date()),
   updatedAt: int("updated_at", { mode: "timestamp" }).notNull().$default(() => new Date()).$onUpdate(() => new Date()),
 });
@@ -26,4 +26,6 @@ export const insertProductSchema = createInsertSchema(productTable, {
   stockQuantity: z.number().positive(),
 }).omit({ id: true, createdAt: true, updatedAt: true });
 
-export type Product = z.infer<typeof selectProductSchema>
+export const updateProductSchema = insertProductSchema.partial();
+
+export type Product = z.infer<typeof insertProductSchema>;

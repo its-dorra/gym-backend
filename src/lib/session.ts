@@ -1,11 +1,8 @@
 import type { Context } from "hono";
 
 import {
-
   getCookie,
-
   setCookie,
-
 } from "hono/cookie";
 
 import { createSession, generateSessionToken, validateRequest } from "@/auth";
@@ -39,18 +36,6 @@ export function getSessionToken(c: Context): string | undefined {
   return getCookie(c, SESSION_COOKIE_NAME);
 }
 
-export async function getCurrentUser(c: Context) {
-  const { user } = await validateRequest(c);
-  return user ?? undefined;
-}
-
-export async function assertAuthenticated(c: Context) {
-  const user = await getCurrentUser(c);
-  if (!user) {
-    throw new Error("You must be logged in to view this content");
-  }
-  return user;
-}
 
 export async function setSession(c: Context, userId: UserId) {
   const token = generateSessionToken();

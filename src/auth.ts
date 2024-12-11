@@ -3,6 +3,7 @@ import type { Context } from "hono";
 import { sha256 } from "@oslojs/crypto/sha2";
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/encoding";
 import { eq } from "drizzle-orm";
+import * as HttpStatusCodes from "stoker/http-status-codes";
 
 import { db } from "@/db";
 import { type Session, sessionTable, type User, userTable } from "@/db/schemas/user.schema";
@@ -26,8 +27,14 @@ export async function createSession(token: string, userId: number): Promise<Sess
   } satisfies Session;
 
   await db.insert(sessionTable).values(session);
+
   return session;
 }
+
+export async function invalidateSession(sessionId: string): Promise<void> {
+  await db.delete(sessionTable).where(eq(sessionTable.id, sessionId));
+}
+
 
 export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
@@ -37,11 +44,13 @@ export async function validateSessionToken(token: string): Promise<SessionValida
     .from(sessionTable)
     .innerJoin(userTable, eq(sessionTable.userId, userTable.id))
     .where(eq(sessionTable.id, sessionId));
-    
+
   if (result.length < 1) {
     return { session: null, user: null };
   }
+
   const { user, session } = result[0];
+
   if (Date.now() >= session.expiresAt.getTime()) {
     await db.delete(sessionTable).where(eq(sessionTable.id, session.id));
     return { session: null, user: null };
@@ -49,6 +58,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
 
   return { session, user };
 }
+
 
 export async function validateRequest(c: Context): Promise<SessionValidationResult> {
   const sessionToken = getSessionToken(c);
@@ -58,10 +68,12 @@ export async function validateRequest(c: Context): Promise<SessionValidationResu
   return validateSessionToken(sessionToken);
 }
 
-export async function invalidateSession(sessionId: string): Promise<void> {
-  await db.delete(sessionTable).where(eq(sessionTable.id, sessionId));
-}
-
 export type SessionValidationResult =
   | { session: Session; user: User }
   | { session: null; user: null };
+
+export async function getCurrentUser(c: Context) {
+  const { user } = await validateRequest(c);
+  return user ?? undefined;
+}
+

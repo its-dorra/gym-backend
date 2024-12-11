@@ -1,16 +1,21 @@
+import type { z } from "zod";
+
 import { type InferSelectModel, relations } from "drizzle-orm";
-import { int, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { index, int, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 import { employeeTable } from "./employee.schema";
 
 export const userTable = sqliteTable("user", {
   id: int("id").primaryKey({ autoIncrement: true }),
-  username: text("username").notNull(),
+  username: text("username").unique().notNull(),
   password: text("password").notNull(),
-  role: text("role").$type<"employee" | "admin">().default("employee"),
+  role: text("role", { enum: ["employee", "admin"] }).$type<"employee" | "admin">().notNull(),
   createdAt: int("created_at", { mode: "timestamp" }).notNull().$default(() => new Date()),
   updatedAt: int("updated_at", { mode: "timestamp" }).notNull().$default(() => new Date()).$onUpdate(() => new Date()),
-});
+}, table => ({
+  username_idx: index("username_idx").on(table.username),
+}));
 
 export const sessionTable = sqliteTable("session", {
   id: text("id").primaryKey(),
@@ -29,7 +34,9 @@ export const userRelations = relations(userTable, ({ one }) => ({
   }),
 }));
 
+export const selectUserSchema = createSelectSchema(userTable).omit({ password: true, createdAt: true, updatedAt: true });
 
+export const insertUserSchema = createInsertSchema(userTable).omit({ createdAt: true, updatedAt: true });
 
-export type User = InferSelectModel<typeof userTable>;
+export type User = z.infer<typeof insertUserSchema>;
 export type Session = InferSelectModel<typeof sessionTable>;
