@@ -4,7 +4,6 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 
 import { invoiceTable } from "./invoice.schema";
-import { membershipTable } from "./membership.schema";
 import { userTable } from "./user.schema";
 
 export const employeeTable = sqliteTable("employee", {
@@ -24,14 +23,16 @@ export const employeeRelations = relations(employeeTable, ({ one, many }) => ({
     fields: [employeeTable.userId],
     references: [userTable.id],
   }),
-  memberships: many(membershipTable),
+
   invoices: many(invoiceTable),
 }));
 
 export const insertEmployeeSchema = createInsertSchema(employeeTable, {
   imageUrl: z.string().url(),
-}).omit({ createdAt: true, updatedAt: true, userId: true });
+}).omit({ createdAt: true, updatedAt: true, userId: true, id: true });
 
-export type Employee = z.infer<typeof insertEmployeeSchema>;
+export const updateEmployeeSchema = insertEmployeeSchema.partial();
 
 export const selectEmployeeSchema = createSelectSchema(employeeTable);
+
+export type Employee = z.infer<typeof insertEmployeeSchema>;

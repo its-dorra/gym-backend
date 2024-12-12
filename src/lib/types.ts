@@ -18,5 +18,10 @@ export type AppOpenAPI = OpenAPIHono<AppBindings>;
 
 export type UserId = number;
 export type EmployeeId = number;
+export type ProductId = number;
+export type MemberId = number;
+export type MembershipId = number;
+export type PlanId = number;
+export type MembershipPlanId = number;
 
 export type HonoContext = Context<AppBindings>;

@@ -5,6 +5,7 @@ import { index, int, integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 import { employeeTable } from "./employee.schema";
+import { membershipTable } from "./membership.schema";
 
 export const userTable = sqliteTable("user", {
   id: int("id").primaryKey({ autoIncrement: true }),
@@ -27,11 +28,12 @@ export const sessionTable = sqliteTable("session", {
   }).notNull(),
 });
 
-export const userRelations = relations(userTable, ({ one }) => ({
+export const userRelations = relations(userTable, ({ one, many }) => ({
   employee: one(employeeTable, {
     fields: [userTable.id],
     references: [employeeTable.userId],
   }),
+  memberships: many(membershipTable),
 }));
 
 export const selectUserSchema = createSelectSchema(userTable).omit({ password: true, createdAt: true, updatedAt: true });
@@ -39,4 +41,7 @@ export const selectUserSchema = createSelectSchema(userTable).omit({ password: t
 export const insertUserSchema = createInsertSchema(userTable).omit({ createdAt: true, updatedAt: true, id: true });
 
 export type User = z.infer<typeof selectUserSchema>;
+
+export type InsertdUser = z.infer<typeof insertUserSchema>;
+
 export type Session = InferSelectModel<typeof sessionTable>;

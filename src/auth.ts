@@ -6,9 +6,8 @@ import { eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { type Session, sessionTable, type User, userTable } from "@/db/schemas/user.schema";
-
-import { SESSION_MAX_AGE } from "./lib/app-config";
-import { getSessionToken } from "./lib/session";
+import { SESSION_MAX_AGE } from "@/lib/app-config";
+import { getSessionToken } from "@/lib/session";
 
 export function generateSessionToken(): string {
   const bytes = new Uint8Array(20);

@@ -3,12 +3,23 @@
     "target": "ESNext",
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
+    "lib": ["ESNext", "DOM"],
+    "moduleDetection": "force",
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "paths": {
       "@/*": ["./src/*"]
     },
+    "allowImportingTsExtensions": true,
     "strict": true,
-    "esModuleInterop": true
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true
   }
 }

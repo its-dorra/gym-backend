@@ -9,7 +9,9 @@ import { catchErrorTyped } from "@/lib/utils";
 import type { CreateProductRoute, DeleteProductRoute, GetOneProductRoute, ListRoute, UpdateProductRoute } from "./products.routes";
 
 export const list: AppRouteHandler<ListRoute> = async (c) => {
-  const [products, error] = await catchErrorTyped(getAllProducts());
+  const { page, pageSize } = c.req.valid("query");
+
+  const [products, error] = await catchErrorTyped(getAllProducts(page, pageSize));
 
   if (error) {
     return c.json(
@@ -46,7 +48,7 @@ export const getOne: AppRouteHandler<GetOneProductRoute> = async (c) => {
 export const create: AppRouteHandler<CreateProductRoute> = async (c) => {
   const product = c.req.valid("json");
 
-  const [res, error] = await catchErrorTyped(createProduct(product));
+  const [inserted, error] = await catchErrorTyped(createProduct(product));
 
   if (error) {
     return c.json(
@@ -55,8 +57,6 @@ export const create: AppRouteHandler<CreateProductRoute> = async (c) => {
     );
   }
 
-  const [inserted] = res;
-
   return c.json(inserted, HttpStatusCodes.CREATED);
 };
 
@@ -64,7 +64,7 @@ export const patch: AppRouteHandler<UpdateProductRoute> = async (c) => {
   const { id } = c.req.valid("param");
   const product = c.req.valid("json");
 
-  const [res, error] = await catchErrorTyped(updateProduct(id, product));
+  const [updatedProduct, error] = await catchErrorTyped(updateProduct(id, product));
 
   if (error) {
     return c.json(
@@ -73,14 +73,12 @@ export const patch: AppRouteHandler<UpdateProductRoute> = async (c) => {
     );
   }
 
-  if (!res.length) {
+  if (!updatedProduct) {
     return c.json(
       { message: HttpStatusPhrases.NOT_FOUND },
       HttpStatusCodes.NOT_FOUND,
     );
   }
-
-  const [updatedProduct] = res;
 
   return c.json(updatedProduct, HttpStatusCodes.OK);
 };

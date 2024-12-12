@@ -1,18 +1,16 @@
 import { createRouter } from "@/lib/create-app";
-import { isAdmin } from "@/middlewares/is-admin";
 import { isAuthenticated } from "@/middlewares/is-authenticated";
 
-import * as handlers from "./employees.handlers";
-import * as routes from "./employees.routes";
+import * as handlers from "./memberships.handlers";
+import * as routes from "./memberships.routes";
 
 const router = createRouter();
 
-router.use(isAuthenticated).use(isAdmin);
+router.use(isAuthenticated);
 
 router
-  .openapi(routes.list, handlers.list)
-  .openapi(routes.create, handlers.create)
   .openapi(routes.getOne, handlers.getOne)
+  .openapi(routes.create, handlers.create)
   .openapi(routes.patch, handlers.patch)
   .openapi(routes.remove, handlers.remove);
 

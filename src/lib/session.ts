@@ -1,14 +1,12 @@
-import type { Context } from "hono";
-
 import {
   getCookie,
   setCookie,
 } from "hono/cookie";
 
+import type { HonoContext, UserId } from "@/lib/types";
+
 import { createSession, generateSessionToken, invalidateSession } from "@/auth";
 import env from "@/env";
-
-import type { HonoContext, UserId } from "./types";
 
 const SESSION_COOKIE_NAME = "session";
 

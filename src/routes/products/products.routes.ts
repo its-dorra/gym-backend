@@ -1,19 +1,25 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import * as HttpStatusCodes from "stoker/http-status-codes";
+import * as HttpStatusPhrases from "stoker/http-status-phrases";
 import { jsonContent, jsonContentOneOf, jsonContentRequired } from "stoker/openapi/helpers";
-import { createErrorSchema, createMessageObjectSchema, IdParamsSchema } from "stoker/openapi/schemas";
+import { createErrorSchema, IdParamsSchema } from "stoker/openapi/schemas";
 
 import { insertProductSchema, selectProductSchema, updateProductSchema } from "@/db/schemas/product.schema";
-import { internalServerErrorSchema, notFoundSchema, unauthorizedSchema } from "@/lib/zod-schemas";
+import { internalServerErrorSchema, notFoundSchema, queryParamSchema, unauthorizedSchema } from "@/lib/zod-schemas";
 
 const tags = ["Products"];
 
 export const list = createRoute({
   tags,
   method: "get",
-  path: "/products",
+  path: "/",
+  request: {
+    query: queryParamSchema,
+  },
   responses: {
     [HttpStatusCodes.OK]: jsonContent(z.array(selectProductSchema), "The list of products"),
+    [HttpStatusCodes.UNAUTHORIZED]: jsonContent(unauthorizedSchema, HttpStatusPhrases.UNAUTHORIZED),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(createErrorSchema(queryParamSchema), "Invalid id error"),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent(
       internalServerErrorSchema,
       "Internal server error(s)",
@@ -24,13 +30,13 @@ export const list = createRoute({
 export const create = createRoute({
   tags,
   method: "post",
-  path: "/products",
+  path: "/",
   request: {
     body: jsonContentRequired(insertProductSchema, "The product to create"),
   },
   responses: {
     [HttpStatusCodes.CREATED]: jsonContent(selectProductSchema, "The created product"),
-    [HttpStatusCodes.UNAUTHORIZED]: jsonContent(createMessageObjectSchema(), "Unauthorized access"),
+    [HttpStatusCodes.UNAUTHORIZED]: jsonContent(unauthorizedSchema, "Unauthorized access"),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(createErrorSchema(insertProductSchema), "Invalid product error(s)"),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent(
       internalServerErrorSchema,
@@ -42,12 +48,13 @@ export const create = createRoute({
 export const getOne = createRoute({
   tags,
   method: "get",
-  path: "/products/{id}",
+  path: "/{id}",
   request: {
     params: IdParamsSchema,
   },
   responses: {
     [HttpStatusCodes.OK]: jsonContent(selectProductSchema, "The requested product"),
+    [HttpStatusCodes.UNAUTHORIZED]: jsonContent(unauthorizedSchema, HttpStatusPhrases.UNAUTHORIZED),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(
       notFoundSchema,
       "Product not found",
@@ -63,7 +70,7 @@ export const getOne = createRoute({
 export const patch = createRoute({
   tags,
   method: "patch",
-  path: "/products/{id}",
+  path: "/{id}",
   request: {
     params: IdParamsSchema,
     body: jsonContentRequired(updateProductSchema, "The product to update"),
@@ -83,7 +90,7 @@ export const patch = createRoute({
 export const remove = createRoute({
   tags,
   method: "delete",
-  path: "/products/{id}",
+  path: "/{id}",
   request: {
     params: IdParamsSchema,
   },
@@ -91,6 +98,7 @@ export const remove = createRoute({
     [HttpStatusCodes.NO_CONTENT]: {
       description: "Product deleted",
     },
+    [HttpStatusCodes.UNAUTHORIZED]: jsonContent(unauthorizedSchema, HttpStatusPhrases.UNAUTHORIZED),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(createErrorSchema(IdParamsSchema), "Invalid id error"),
     [HttpStatusCodes.INTERNAL_SERVER_ERROR]: jsonContent(
       internalServerErrorSchema,

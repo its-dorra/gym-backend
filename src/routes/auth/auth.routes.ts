@@ -11,7 +11,7 @@ const tags = ["Authentication"];
 
 export const login = createRoute({
   tags,
-  path: "/auth/login",
+  path: "/login",
   method: "post",
   request: {
     body: jsonContentRequired(insertUserSchema.omit({ role: true }), ""),
@@ -34,7 +34,7 @@ export const login = createRoute({
 
 export const logout = createRoute({
   tags,
-  path: "/auth/logout",
+  path: "/logout",
   method: "post",
   responses: {
     [HttpStatusCodes.NO_CONTENT]: {
@@ -49,7 +49,7 @@ export const logout = createRoute({
 
 export const user = createRoute({
   tags,
-  path: "/auth/user",
+  path: "/user",
   method: "get",
   responses: {
     [HttpStatusCodes.OK]: jsonContent(
