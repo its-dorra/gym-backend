@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Gym management system backend</title>
+    <style>
+      :root {
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --background-color: #f4f4f4;
+        --text-color: #333;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          Oxygen,
+          Ubuntu,
+          Cantarell,
+          "Open Sans",
+          "Helvetica Neue",
+          sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+      }
+
+      .app-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        font-size: 2rem;
+        font-weight: 700;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-color);
+      }
+
+      .card-content {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--secondary-color);
+      }
+
+      .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #2980b9;
+      }
+
+      .btn-secondary {
+        background-color: var(--secondary-color);
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background-color: #27ae60;
+      }
+
+      @media (max-width: 500px) {
+        .header h1 {
+          font-size: 1.5rem;
+        }
+
+        .card-content {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <header class="header">
+        <h1>Your Electron Application</h1>
+      </header>
+
+      <div class="dashboard">
+        <div class="card" id="serverStatusCard">
+          <div class="card-title">Server Status</div>
+          <div class="card-content" id="serverStatus">Connecting...</div>
+        </div>
+
+        <div class="card" id="requestCountCard">
+          <div class="card-title">Total Requests</div>
+          <div class="card-content" id="requestCount">0</div>
+        </div>
+
+        <div class="card" id="uptimeCard">
+          <div class="card-title">Uptime</div>
+          <div class="card-content" id="uptime">00:00:00</div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-primary" id="restartServerBtn" aria-label="Restart the server">Restart Server</button>
+        <button class="btn btn-secondary" id="openDevToolsBtn" aria-label="Open developer tools">Open DevTools</button>
+      </div>
+    </div>
+
+    <script>
+      const { ipcRenderer } = require("electron");
+
+      const serverStatusEl = document.getElementById("serverStatus");
+      const requestCountEl = document.getElementById("requestCount");
+      const uptimeEl = document.getElementById("uptime");
+
+      const restartServerBtn = document.getElementById("restartServerBtn");
+      const openDevToolsBtn = document.getElementById("openDevToolsBtn");
+
+      function updateServerStatus(status) {
+        serverStatusEl.textContent = status;
+        serverStatusEl.style.color = status === "Online" ? "var(--secondary-color)" : "var(--primary-color)";
+      }
+
+
+      function updateRequestCount(count) {
+        requestCountEl.textContent = count;
+        highlightCard(requestCountEl.parentElement);
+      }
+
+
+      function updateUptime(time) {
+        uptimeEl.textContent = time;
+        highlightCard(uptimeEl.parentElement);
+      }
+
+      function highlightCard(cardEl) {
+        cardEl.style.boxShadow = "0 8px 12px rgba(0, 0, 0, 0.2)";
+        setTimeout(() => {
+          cardEl.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
+        }, 500);
+      }
+
+      ipcRenderer.on("server-status", (event, status) => {
+        try {
+          updateServerStatus(status);
+        } catch (error) {
+          serverStatusEl.textContent = "Error fetching status";
+        }
+      });
+
+      ipcRenderer.on("request-count", (event, count) => {
+        try {
+          updateRequestCount(count);
+        } catch (error) {
+          console.error("Failed to update request count:", error);
+        }
+      });
+
+      ipcRenderer.on("server-uptime", (event, uptime) => {
+        try {
+          updateUptime(uptime);
+        } catch (error) {
+          console.error("Failed to update uptime:", error);
+        }
+      });
+
+      restartServerBtn.addEventListener("click", () => {
+        ipcRenderer.send("restart-server");
+        restartServerBtn.disabled = true;
+        restartServerBtn.textContent = "Restarting...";
+        setTimeout(() => {
+          restartServerBtn.disabled = false;
+          restartServerBtn.textContent = "Restart Server";
+        }, 5000); // Example timeout for feedback
+      });
+
+      openDevToolsBtn.addEventListener("click", () => {
+        ipcRenderer.send("open-devtools");
+      });
+
+      updateServerStatus("Initializing");
+    </script>
+  </body>
+</html>

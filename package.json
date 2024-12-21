@@ -2,13 +2,17 @@
   "name": "gym-backend",
   "type": "module",
   "version": "1.0.0",
+  "main": "electron/main.js",
   "scripts": {
-    "dev": "bun run --hot src/index.ts",
+    "dev": "bun run --hot backend/src/index.ts",
     "lint": "eslint .",
     "lint:fix": "bun run lint --fix",
     "db:generate": "bunx drizzle-kit generate",
     "db:migrate": "bunx drizzle-kit migrate",
-    "db:studio": "bunx drizzle-kit studio"
+    "electron": "electron .",
+    "db:studio": "bunx drizzle-kit studio",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^7.3.0",
@@ -17,10 +21,13 @@
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
     "@scalar/hono-api-reference": "^0.5.163",
+    "dotenv": "^16.4.7",
     "drizzle-orm": "^0.33.0",
     "drizzle-zod": "^0.5.1",
     "hono": "^4.6.13",
     "hono-pino": "^0.7.0",
+    "hono-rate-limiter": "^0.4.2",
+    "node-cron": "^3.0.3",
     "pino": "^9.5.0",
     "pino-pretty": "^13.0.0",
     "stoker": "^1.4.2",
@@ -29,8 +36,23 @@
   "devDependencies": {
     "@antfu/eslint-config": "^3.11.2",
     "@types/bun": "latest",
+    "@types/electron": "^1.6.12",
+    "@types/node-cron": "^3.0.11",
     "drizzle-kit": "^0.24.2",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
     "eslint": "^9.15.0",
     "eslint-plugin-format": "^0.1.2"
+  },
+  "build": {
+    "appId": "com.gymmanagement.api",
+    "productName": "Gym management system API",
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "output": "release/"
+    }
   }
 }
