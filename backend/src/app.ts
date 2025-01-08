@@ -1,5 +1,6 @@
 import configureOpenAPI from "@/lib/configure-open-api";
 import createApp from "@/lib/create-app";
+import attendances from "@/routes/attendances/attendances.index";
 import auth from "@/routes/auth/auth.index";
 import employees from "@/routes/employees/employees.index";
 import members from "@/routes/members/members.index";
@@ -10,12 +11,13 @@ import products from "@/routes/products/products.index";
 const app = createApp();
 
 const routes = [
+  { path: "/attendances", handler: attendances },
   { path: "/auth", handler: auth },
-  { path: "/products", handler: products },
   { path: "/employees", handler: employees },
-  { path: "/memberships", handler: memberships },
   { path: "/members", handler: members },
+  { path: "/memberships", handler: memberships },
   { path: "/membership-plans", handler: membershipPlans },
+  { path: "/products", handler: products },
 ] as const;
 
 configureOpenAPI(app);

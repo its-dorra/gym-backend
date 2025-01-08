@@ -16,7 +16,6 @@ export const login: AppRouteHandler<LoginRoute> = async (c) => {
 
   const [storedUser, getUserError] = await catchErrorTyped(getUserByUsername(username));
   if (getUserError) {
-    console.log(getUserError);
     return c.json({ message: HttpStatusPhrases.INTERNAL_SERVER_ERROR }, HttpStatusCodes.INTERNAL_SERVER_ERROR);
   }
 

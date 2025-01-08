@@ -6,7 +6,7 @@ import defaultHook from "stoker/openapi/default-hook";
 import type { AppBindings } from "@/lib/types";
 
 import { pinoLogger } from "@/middlewares/pino-logger";
-import { configuredSecureHeaders } from "@/middlewares/secure-headers";
+
 
 export function createRouter() {
   return new OpenAPIHono<AppBindings>({ strict: false, defaultHook });

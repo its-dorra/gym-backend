@@ -6,6 +6,7 @@ import { createErrorSchema, IdParamsSchema } from "stoker/openapi/schemas";
 
 import { insertProductSchema, selectProductSchema, updateProductSchema } from "@/db/schemas/product.schema";
 import { extendZodSchemaByPaginationSchema, internalServerErrorSchema, notFoundSchema, queryParamSchema, unauthorizedSchema } from "@/lib/zod-schemas";
+import { isAuthenticated } from "@/middlewares/is-authenticated";
 
 const tags = ["Products"];
 
@@ -13,6 +14,7 @@ export const list = createRoute({
   tags,
   method: "get",
   path: "/",
+   
   request: {
     query: queryParamSchema,
   },
@@ -31,6 +33,7 @@ export const create = createRoute({
   tags,
   method: "post",
   path: "/",
+   
   request: {
     body: jsonContentRequired(insertProductSchema, "The product to create"),
   },
@@ -49,6 +52,7 @@ export const getOne = createRoute({
   tags,
   method: "get",
   path: "/{id}",
+   
   request: {
     params: IdParamsSchema,
   },
@@ -70,6 +74,7 @@ export const getOne = createRoute({
 export const patch = createRoute({
   tags,
   method: "patch",
+   
   path: "/{id}",
   request: {
     params: IdParamsSchema,
@@ -90,6 +95,7 @@ export const patch = createRoute({
 export const remove = createRoute({
   tags,
   method: "delete",
+   
   path: "/{id}",
   request: {
     params: IdParamsSchema,

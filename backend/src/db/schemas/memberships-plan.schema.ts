@@ -1,6 +1,6 @@
 import { relations } from "drizzle-orm";
 import { int, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { createSelectSchema } from "drizzle-zod";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 import { membershipTable } from "./membership.schema";
 
@@ -22,3 +22,4 @@ export const membershipPlanRelations = relations(membershipPlanTable, ({ many })
 }));
 
 export const selectMembershipPlanSchema = createSelectSchema(membershipPlanTable);
+export const createMembershipPlanSchema = createInsertSchema(membershipPlanTable).omit({id: true , createdAt : true , updatedAt : true , deletedAt : true})

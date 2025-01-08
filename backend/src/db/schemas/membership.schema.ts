@@ -1,5 +1,6 @@
 import type { z } from "zod";
 
+import { add } from "date-fns";
 import { relations } from "drizzle-orm";
 import { int, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
@@ -15,7 +16,7 @@ export const membershipTable = sqliteTable("membership", {
   planId: int("plan_id").notNull().references(() => membershipPlanTable.id),
   userId: int("user_id").notNull().references(() => employeeTable.id),
   startDate: int("start_date", { mode: "timestamp" }).notNull().$default(() => new Date()),
-  // endDate: int("end_date", { mode: "timestamp" }).notNull(),
+  endDate: int("end_date", { mode: "timestamp" }).notNull().$default(() => add(new Date() , {months : 1})),
   status: text("status", { enum: ["active", "expired"] }).notNull().default("active"),
   sessionUsed: int("sessions_used").notNull().default(0),
   price: real("price").notNull(),

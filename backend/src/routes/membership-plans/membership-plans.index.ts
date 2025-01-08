@@ -8,6 +8,6 @@ const router = createRouter();
 
 router.use(isAuthenticated);
 
-router.openapi(routes.list, handlers.list).openapi(routes.getOne, handlers.getOne);
+router.openapi(routes.list, handlers.list).openapi(routes.getOne, handlers.getOne).openapi(routes.create, handlers.create);
 
 export default router;

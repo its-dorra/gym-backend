@@ -1,15 +1,22 @@
 import { eq } from "drizzle-orm";
 
-import type { MembershipId, UserId } from "@/lib/types";
-
 import { db } from "@/db";
 import { type InsertedMembership, membershipTable } from "@/db/schemas/membership.schema";
+import { ErrorWithStatus, type MemberId, type MembershipId, type UserId } from "@/lib/types";
 import { catchErrorTyped } from "@/lib/utils";
 
 import { getOneMembershipPlan } from "./membership-plans";
 
 export function getOneMembership(membershipId: MembershipId) {
-  return db.query.membershipTable.findFirst({ where: eq(membershipTable.id, membershipId) });
+  return db.query.membershipTable.findFirst({ where: eq(membershipTable.id, membershipId), orderBy: (fields, { desc }) => desc(fields.createdAt) });
+}
+
+export function getMemberMembership(memberId: MemberId) {
+  return db.query.membershipTable.findFirst({ where: eq(membershipTable.memberId, memberId), orderBy: (fields, { desc }) => desc(fields.createdAt) });
+}
+
+export function incrememntMemberSessions(membershipId: MembershipId, newSessionsCount: number) {
+  return db.update(membershipTable).set({ sessionUsed: newSessionsCount }).where(eq(membershipTable.id, membershipId)).returning().then(res => res?.[0]);
 }
 
 export async function createMembership(userId: UserId, membership: InsertedMembership) {
@@ -19,7 +26,7 @@ export async function createMembership(userId: UserId, membership: InsertedMembe
     throw error;
 
   if (!membershipPlan)
-    throw new Error("There's no plan for this id");
+    throw new ErrorWithStatus("There's no plan for this id", 404);
 
   const { price, totalSessions } = membershipPlan;
 

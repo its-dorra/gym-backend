@@ -31,4 +31,6 @@ export const forbiddenSchema = createMessageObjectSchema(HttpStatusPhrases.FORBI
 
 export const internalServerErrorSchema = createMessageObjectSchema(HttpStatusPhrases.INTERNAL_SERVER_ERROR);
 
+export const badRequestErrorSchema = createMessageObjectSchema(HttpStatusPhrases.BAD_REQUEST);
+
 export const tooManyRequestsSchema = createMessageObjectSchema(HttpStatusPhrases.TOO_MANY_REQUESTS);

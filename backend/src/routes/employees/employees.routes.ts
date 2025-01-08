@@ -33,6 +33,7 @@ export const getOne = createRoute({
   tags,
   method: "get",
   path: "/{id}",
+
   request: {
     params: IdParamsSchema,
   },
@@ -56,6 +57,7 @@ export const getOne = createRoute({
 export const create = createRoute({
   tags,
   method: "post",
+
   path: "/",
   request: {
     body: jsonContentRequired(insertUserSchema.merge(insertEmployeeSchema), ""),
@@ -75,6 +77,7 @@ export const create = createRoute({
 export const patch = createRoute({
   tags,
   method: "patch",
+
   path: "/{id}",
   request: {
     params: IdParamsSchema,
@@ -96,6 +99,7 @@ export const patch = createRoute({
 export const remove = createRoute({
   tags,
   method: "delete",
+
   path: "/{id}",
   request: {
     params: IdParamsSchema,

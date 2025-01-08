@@ -11,6 +11,7 @@ const tags = ["Members"];
 
 export const list = createRoute({
   tags,
+   
   path: "/",
   method: "get",
   request: {
@@ -27,6 +28,7 @@ export const getOne = createRoute({
   tags,
   path: "/{id}",
   method: "get",
+   
   request: {
     params: IdParamsSchema,
   },
@@ -58,6 +60,7 @@ export const patch = createRoute({
   tags,
   path: "/{id}",
   method: "patch",
+   
   request: {
     params: IdParamsSchema,
     body: jsonContentRequired(updateMemberSchema, "The member to update"),
@@ -75,6 +78,7 @@ export const remove = createRoute({
   tags,
   method: "delete",
   path: "/{id}",
+   
   request: {
     params: IdParamsSchema,
   },

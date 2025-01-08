@@ -7,12 +7,14 @@ import { createErrorSchema, IdParamsSchema } from "stoker/openapi/schemas";
 import { insertMembershipSchema, selectMembershipSchema, updateMembershipSchema } from "@/db/schemas/membership.schema";
 import { internalServerErrorSchema, notFoundSchema, unauthorizedSchema } from "@/lib/zod-schemas";
 
+
 const tags = ["Memberships"];
 
 export const create = createRoute({
   tags,
   method: "post",
   path: "/",
+   
   request: {
     body: jsonContentRequired(insertMembershipSchema, "The membership to create"),
   },
@@ -30,6 +32,7 @@ export const create = createRoute({
 export const getOne = createRoute({
   tags,
   method: "get",
+   
   path: "/{memberId}/history/{id}",
   request: {
     params: IdParamsSchema.extend({ memberId: z.coerce.number() }),
@@ -49,6 +52,7 @@ export const getOne = createRoute({
 export const patch = createRoute({
   tags,
   method: "patch",
+   
   path: "/{memberId}/history/{id}",
   request: {
     params: IdParamsSchema.extend({ memberId: z.coerce.number() }),
@@ -69,6 +73,7 @@ export const patch = createRoute({
 export const remove = createRoute({
   tags,
   method: "delete",
+   
   path: "/{memberId}/history/{id}",
   request: {
     params: IdParamsSchema,

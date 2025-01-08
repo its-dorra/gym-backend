@@ -29,3 +29,14 @@ export type MembershipPlanId = number;
 export type HonoContext = Context<AppBindings>;
 
 export type QueryParams = z.infer<typeof queryParamSchema>;
+
+
+export class ErrorWithStatus extends Error {
+ 
+  public status : number;
+
+  constructor(message: string, status : number) {
+    super(message)
+    this.status = status
+  }
+}

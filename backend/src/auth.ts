@@ -38,7 +38,7 @@ export async function validateSessionToken(token: string): Promise<SessionValida
   const sessionId = createSessionIdFromToken(token);
 
   const result = await db
-    .select({ user: { id: userTable.id, username: userTable.username, role: userTable.role, deletedAt: userTable.deletedAt }, session: sessionTable })
+    .select({ user: { id: userTable.id, username: userTable.username, role: userTable.role }, session: sessionTable })
     .from(sessionTable)
     .innerJoin(userTable, eq(sessionTable.userId, userTable.id))
     .where(eq(sessionTable.id, sessionId));
