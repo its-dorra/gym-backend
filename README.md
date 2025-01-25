@@ -1,4 +1,5 @@
 # Bun + Hono Backend Project
+## Gym backend project
 
 ## Overview
 Modern backend project with Bun, Hono, Drizzle ORM, and SQLite
